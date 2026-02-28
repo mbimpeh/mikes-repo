@@ -1,0 +1,62 @@
+name: Quality
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate HTML
+        run: |
+          pip install html5validator
+          html5validator --root . --ignore "*.md" --ignore ".git/*"
+
+      - name: Check for common issues
+        run: |
+          test -f index.html || (echo "Missing index.html" && exit 1)
+          ! grep -r "TODO\|FIXME\|XXX" --include="*.html" . || true
+
+  accessibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install and run accessibility check
+        run: |
+          npx --yes serve -s . -l 5000 &
+          sleep 3
+          npx --yes @axe-core/cli http://localhost:5000 --exit
+
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Check links
+        run: |
+          npx --yes serve -s . -l 5000 &
+          sleep 3
+          npx --yes linkinator http://localhost:5000 --recurse --fail
