@@ -2,7 +2,7 @@
 
 Before merge/release:
 
-- [ ] CI passes (HTML validation, accessibility, link check).
+- [ ] CI passes (HTML validation, basic checks).
 - [ ] No open critical/high bugs for this scope.
 - [ ] README/docs updated if needed.
 - [ ] CHANGELOG updated for user-facing changes.
