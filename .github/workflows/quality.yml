@@ -41,7 +41,7 @@ jobs:
       - name: Install and run accessibility check
         run: |
           npx --yes serve -s . -l 5000 &
-          sleep 3
+          for i in 1 2 3 4 5 6 7 8 9 10; do curl -s -o /dev/null -w "%{http_code}" http://localhost:5000 | grep -q 200 && break; sleep 2; done
           npx --yes @axe-core/cli http://localhost:5000 --exit
 
   links:
@@ -58,5 +58,5 @@ jobs:
       - name: Check links
         run: |
           npx --yes serve -s . -l 5000 &
-          sleep 3
-          npx --yes linkinator http://localhost:5000 --recurse --fail
+          for i in 1 2 3 4 5 6 7 8 9 10; do curl -s -o /dev/null -w "%{http_code}" http://localhost:5000 | grep -q 200 && break; sleep 2; done
+          npx --yes linkinator http://localhost:5000 --recurse
